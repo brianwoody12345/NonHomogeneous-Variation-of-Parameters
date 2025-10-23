@@ -32,60 +32,56 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px;
+            padding: 20px;
         }
         
         .math-container {
             text-align: center;
             max-width: 1100px;
             width: 95%;
-            max-height: 90vh;
-            overflow: hidden;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
         
         .title {
-            font-size: 2.2em;
+            font-size: 1.8em;
             font-weight: bold;
             color: #4fc3f7;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
             text-align: center;
             font-family: 'Latin Modern Math', 'CMU Serif', serif;
+            flex-shrink: 0;
         }
         
         .content-area {
-            max-height: 65vh;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        
-        /* Custom scrollbar */
-        .content-area::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .content-area::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-        
-        .content-area::-webkit-scrollbar-thumb {
-            background: #4fc3f7;
-            border-radius: 3px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
         
         .math-line {
-            font-size: 1.9em;
-            margin: 20px 0;
+            font-size: 1.5em;
+            margin: 8px 0;
             color: #e3f2fd;
             text-align: center;
-            min-height: 45px;
-            line-height: 1.4;
+            line-height: 1.2;
             opacity: 0;
-            transform: translateY(25px);
+            transform: translateY(20px);
+            max-width: 100%;
+        }
+        
+        .compact-line {
+            font-size: 1.4em;
+            margin: 6px 0;
+            line-height: 1.1;
         }
         
         .fade-in {
-            animation: fadeInUp 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation: fadeInUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
         
         @keyframes fadeInUp {
@@ -107,16 +103,10 @@
             margin-left: 1px;
         }
         
-        .integral {
-            font-size: 1.6em;
-            vertical-align: middle;
-            margin: 0 3px;
-        }
-        
         .matrix {
             display: inline-table;
             vertical-align: middle;
-            margin: 0 8px;
+            margin: 0 3px;
             border-collapse: collapse;
         }
         
@@ -126,48 +116,48 @@
         
         .matrix-cell {
             display: table-cell;
-            padding: 2px 12px;
+            padding: 0px 4px;
             text-align: center;
+            font-size: 0.8em;
         }
         
         .vertical-bar {
-            border-left: 2px solid #e3f2fd;
-            border-right: 2px solid #e3f2fd;
-            padding: 0 12px;
-            margin: 0 8px;
+            border-left: 1px solid #e3f2fd;
+            border-right: 1px solid #e3f2fd;
+            padding: 0 4px;
+            margin: 0 3px;
             display: inline-block;
         }
         
         .final-box {
-            border: 3px solid #4fc3f7;
-            padding: 35px 60px;
-            border-radius: 15px;
-            margin: 35px 0;
+            border: 2px solid #4fc3f7;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin: 15px 0;
             background: rgba(79, 195, 247, 0.1);
-            box-shadow: 0 0 40px rgba(79, 195, 247, 0.25);
-            font-size: 2.4em;
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.25);
+            font-size: 1.8em;
             font-weight: bold;
+            flex-shrink: 0;
         }
         
         .slide-counter {
             position: absolute;
-            bottom: 25px;
-            right: 25px;
+            bottom: 15px;
+            right: 15px;
             color: #666;
-            font-size: 1.1em;
+            font-size: 0.9em;
             font-family: 'CMU Serif', serif;
         }
         
         .spacer {
-            height: 15px;
+            height: 5px;
+            flex-shrink: 0;
         }
         
-        .large-spacer {
-            height: 25px;
-        }
-        
-        .medium-spacer {
-            height: 30px;
+        .tiny-spacer {
+            height: 3px;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -189,115 +179,73 @@
             {
                 title: "Problem Statement",
                 content: [
-                    "Find the general solution using variation of parameters:",
-                    "",
+                    "Find the general solution:",
                     "y″ − 5y′ + 6y = 2eᵗ",
-                    "",
-                    "Given the non-homogeneous equation"
+                    "Using variation of parameters"
                 ]
             },
             {
                 title: "Step 1: Homogeneous Solution",
                 content: [
-                    "Solve the homogeneous equation:",
-                    "",
+                    "Homogeneous equation:",
                     "y″ − 5y′ + 6y = 0",
-                    "",
                     "Characteristic equation:",
                     "λ² − 5λ + 6 = 0",
-                    "",
-                    "Factor:",
-                    "(λ − 2)(λ − 3) = 0",
-                    "",
-                    "Roots:",
-                    "λ = 2, λ = 3",
-                    "",
+                    "Factor: (λ − 2)(λ − 3) = 0",
+                    "Roots: λ = 2, λ = 3",
                     "Complementary solution:",
                     "y_c(t) = c₁e²ᵗ + c₂e³ᵗ"
                 ]
             },
             {
-                title: "Step 2: Fundamental Solutions",
+                title: "Step 2: Wronskian",
                 content: [
                     "Fundamental solutions:",
-                    "",
-                    "y₁(t) = e²ᵗ",
-                    "y₂(t) = e³ᵗ",
-                    "",
-                    "Compute the Wronskian determinant:",
-                    "",
-                    "W(y₁, y₂) = det",
+                    "y₁ = e²ᵗ, y₂ = e³ᵗ",
+                    "Wronskian:",
+                    "W = det",
                     "<div class='vertical-bar'><div class='matrix'><div class='matrix-row'><div class='matrix-cell'>e²ᵗ</div><div class='matrix-cell'>e³ᵗ</div></div><div class='matrix-row'><div class='matrix-cell'>2e²ᵗ</div><div class='matrix-cell'>3e³ᵗ</div></div></div></div>",
-                    "",
-                    "W = e²ᵗ · 3e³ᵗ − e³ᵗ · 2e²ᵗ",
-                    "",
-                    "W = 3e⁵ᵗ − 2e⁵ᵗ = e⁵ᵗ"
+                    "W = e²ᵗ·3e³ᵗ − e³ᵗ·2e²ᵗ",
+                    "W = e⁵ᵗ"
                 ]
             },
             {
                 title: "Step 3: Variation Setup",
                 content: [
-                    "Non-homogeneous term:",
                     "g(t) = 2eᵗ",
-                    "",
-                    "Variation of parameters formula:",
-                    "",
+                    "Formula:",
                     "y_p = −y₁∫(y₂g/W)dt + y₂∫(y₁g/W)dt",
-                    "",
                     "First integral:",
-                    "",
-                    "∫(y₂g/W)dt = ∫(e³ᵗ · 2eᵗ / e⁵ᵗ)dt",
-                    "",
-                    "= ∫(2e⁴ᵗ / e⁵ᵗ)dt = ∫2e⁻ᵗdt"
+                    "∫(y₂g/W)dt = ∫2e⁻ᵗdt"
                 ]
             },
             {
                 title: "Step 4: Compute Integrals",
                 content: [
-                    "Evaluate the first integral:",
-                    "",
+                    "First integral:",
                     "∫2e⁻ᵗdt = −2e⁻ᵗ",
-                    "",
                     "Second integral:",
-                    "",
-                    "∫(y₁g/W)dt = ∫(e²ᵗ · 2eᵗ / e⁵ᵗ)dt",
-                    "",
-                    "= ∫(2e³ᵗ / e⁵ᵗ)dt = ∫2e⁻²ᵗdt",
-                    "",
+                    "∫(y₁g/W)dt = ∫2e⁻²ᵗdt",
                     "∫2e⁻²ᵗdt = −e⁻²ᵗ"
                 ]
             },
             {
                 title: "Step 5: Particular Solution",
                 content: [
-                    "Construct particular solution:",
-                    "",
-                    "y_p = −y₁∫(y₂g/W)dt + y₂∫(y₁g/W)dt",
-                    "",
-                    "Substitute computed integrals:",
-                    "",
+                    "Construct solution:",
                     "y_p = −e²ᵗ(−2e⁻ᵗ) + e³ᵗ(−e⁻²ᵗ)",
-                    "",
-                    "Simplify each term:",
-                    "",
+                    "Simplify:",
                     "y_p = 2e²ᵗe⁻ᵗ − e³ᵗe⁻²ᵗ",
-                    "",
-                    "Combine exponential terms:",
-                    "",
                     "y_p = 2eᵗ − eᵗ",
-                    "",
-                    "Final particular solution:",
                     "y_p(t) = eᵗ"
                 ]
             },
             {
                 title: "Final Solution",
                 content: [
-                    "General solution is the sum:",
+                    "General solution:",
                     "y(t) = y_c(t) + y_p(t)",
-                    "",
                     "<div class='final-box'>y(t) = c₁e²ᵗ + c₂e³ᵗ + eᵗ</div>",
-                    "",
                     "Solution complete ✓"
                 ]
             }
@@ -314,41 +262,30 @@
             // Update title
             titleElement.textContent = slide.title;
             
-            // Build content
+            // Build content with compact layout for Step 2
             let contentHTML = '';
             slide.content.forEach(line => {
-                if (line === "") {
-                    contentHTML += `<div class="spacer"></div>`;
-                } else if (line.includes('final-box')) {
+                if (line.includes('final-box')) {
                     contentHTML += line;
+                } else if (slideIndex === 2) { // Step 2 gets compact styling
+                    contentHTML += `<div class="compact-line">${line}</div>`;
                 } else {
                     contentHTML += `<div class="math-line">${line}</div>`;
                 }
+                contentHTML += `<div class="tiny-spacer"></div>`;
             });
             
             contentArea.innerHTML = contentHTML;
             counter.textContent = `${slideIndex + 1}/${slides.length}`;
             
-            // Scroll to top
-            contentArea.scrollTop = 0;
-            
-            // Animate lines with perfect timing
-            const lines = contentArea.querySelectorAll('.math-line');
+            // Animate ALL lines with proper timing
+            const lines = contentArea.querySelectorAll('.math-line, .compact-line, .final-box');
             lines.forEach((line, index) => {
-                line.style.animationDelay = `${index * 0.5}s`;
+                line.style.animationDelay = `${index * 0.4}s`;
                 setTimeout(() => {
                     line.classList.add('fade-in');
                 }, 100);
             });
-            
-            // Animate final box with special timing
-            const finalBox = contentArea.querySelector('.final-box');
-            if (finalBox) {
-                setTimeout(() => {
-                    finalBox.style.animationDelay = '0s';
-                    finalBox.classList.add('fade-in');
-                }, lines.length * 500 + 500);
-            }
             
             currentSlide = slideIndex;
         }
@@ -359,21 +296,21 @@
             }
         }
 
-        // Auto-advance every 10 seconds for perfect reading
-        let slideInterval = setInterval(nextSlide, 10000);
+        // Auto-advance every 8 seconds
+        let slideInterval = setInterval(nextSlide, 8000);
 
         // Manual navigation
         document.addEventListener('click', () => {
             clearInterval(slideInterval);
             nextSlide();
-            slideInterval = setInterval(nextSlide, 10000);
+            slideInterval = setInterval(nextSlide, 8000);
         });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === ' ' || e.key === 'ArrowRight') {
                 clearInterval(slideInterval);
                 nextSlide();
-                slideInterval = setInterval(nextSlide, 10000);
+                slideInterval = setInterval(nextSlide, 8000);
             }
         });
 
