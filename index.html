@@ -78,6 +78,8 @@
             font-size: 1.4em;
             margin: 6px 0;
             line-height: 1.1;
+            opacity: 0;
+            transform: translateY(20px);
         }
         
         .fade-in {
@@ -139,6 +141,8 @@
             font-size: 1.8em;
             font-weight: bold;
             flex-shrink: 0;
+            opacity: 0;
+            transform: translateY(20px);
         }
         
         .slide-counter {
@@ -262,7 +266,7 @@
             // Update title
             titleElement.textContent = slide.title;
             
-            // Build content with compact layout for Step 2
+            // Build content - FIXED: Properly handle all content
             let contentHTML = '';
             slide.content.forEach(line => {
                 if (line.includes('final-box')) {
@@ -272,19 +276,23 @@
                 } else {
                     contentHTML += `<div class="math-line">${line}</div>`;
                 }
-                contentHTML += `<div class="tiny-spacer"></div>`;
+                if (!line.includes('final-box')) {
+                    contentHTML += `<div class="tiny-spacer"></div>`;
+                }
             });
             
             contentArea.innerHTML = contentHTML;
             counter.textContent = `${slideIndex + 1}/${slides.length}`;
             
-            // Animate ALL lines with proper timing
-            const lines = contentArea.querySelectorAll('.math-line, .compact-line, .final-box');
-            lines.forEach((line, index) => {
-                line.style.animationDelay = `${index * 0.4}s`;
+            // Animate ALL elements with proper sequential timing
+            const allElements = contentArea.querySelectorAll('.math-line, .compact-line, .final-box');
+            allElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.4}s`;
+                // Remove any existing classes and re-add for clean animation
+                element.classList.remove('fade-in');
                 setTimeout(() => {
-                    line.classList.add('fade-in');
-                }, 100);
+                    element.classList.add('fade-in');
+                }, 100 + (index * 400));
             });
             
             currentSlide = slideIndex;
@@ -314,7 +322,7 @@
             }
         });
 
-        // Start with first slide
+        // Start with first slide - FIXED: Ensure initial content stays visible
         showSlide(0);
     </script>
 </body>
