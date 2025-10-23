@@ -154,6 +154,48 @@
             font-family: 'CMU Serif', serif;
         }
         
+        .controls {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(79, 195, 247, 0.2);
+            border: 1px solid #4fc3f7;
+            color: #4fc3f7;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'CMU Serif', serif;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(79, 195, 247, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .control-btn:disabled:hover {
+            background: rgba(79, 195, 247, 0.2);
+            transform: none;
+        }
+        
+        .paused {
+            background: rgba(255, 87, 87, 0.2);
+            border-color: #ff5757;
+            color: #ff5757;
+        }
+        
         .spacer {
             height: 5px;
             flex-shrink: 0;
@@ -175,6 +217,11 @@
                 <div class="math-line">y″ − 5y′ + 6y = 2eᵗ</div>
             </div>
         </div>
+        <div class="controls">
+            <button class="control-btn" id="pauseBtn">Pause</button>
+            <button class="control-btn" id="prevBtn" disabled>Previous</button>
+            <button class="control-btn" id="nextBtn">Next</button>
+        </div>
         <div class="slide-counter" id="counter">1/7</div>
     </div>
 
@@ -186,7 +233,8 @@
                     "Find the general solution:",
                     "y″ − 5y′ + 6y = 2eᵗ",
                     "Using variation of parameters"
-                ]
+                ],
+                duration: 8000
             },
             {
                 title: "Step 1: Homogeneous Solution",
@@ -199,7 +247,8 @@
                     "Roots: λ = 2, λ = 3",
                     "Complementary solution:",
                     "y_c(t) = c₁e²ᵗ + c₂e³ᵗ"
-                ]
+                ],
+                duration: 8000
             },
             {
                 title: "Step 2: Wronskian",
@@ -211,7 +260,8 @@
                     "<div class='vertical-bar'><div class='matrix'><div class='matrix-row'><div class='matrix-cell'>e²ᵗ</div><div class='matrix-cell'>e³ᵗ</div></div><div class='matrix-row'><div class='matrix-cell'>2e²ᵗ</div><div class='matrix-cell'>3e³ᵗ</div></div></div></div>",
                     "W = e²ᵗ·3e³ᵗ − e³ᵗ·2e²ᵗ",
                     "W = e⁵ᵗ"
-                ]
+                ],
+                duration: 8000
             },
             {
                 title: "Step 3: Variation Setup",
@@ -221,7 +271,8 @@
                     "y_p = −y₁∫(y₂g/W)dt + y₂∫(y₁g/W)dt",
                     "First integral:",
                     "∫(y₂g/W)dt = ∫2e⁻ᵗdt"
-                ]
+                ],
+                duration: 8000
             },
             {
                 title: "Step 4: Compute Integrals",
@@ -231,7 +282,8 @@
                     "Second integral:",
                     "∫(y₁g/W)dt = ∫2e⁻²ᵗdt",
                     "∫2e⁻²ᵗdt = −e⁻²ᵗ"
-                ]
+                ],
+                duration: 8000
             },
             {
                 title: "Step 5: Particular Solution",
@@ -242,7 +294,8 @@
                     "y_p = 2e²ᵗe⁻ᵗ − e³ᵗe⁻²ᵗ",
                     "y_p = 2eᵗ − eᵗ",
                     "y_p(t) = eᵗ"
-                ]
+                ],
+                duration: 8000
             },
             {
                 title: "Final Solution",
@@ -251,22 +304,27 @@
                     "y(t) = y_c(t) + y_p(t)",
                     "<div class='final-box'>y(t) = c₁e²ᵗ + c₂e³ᵗ + eᵗ</div>",
                     "Solution complete ✓"
-                ]
+                ],
+                duration: 10000
             }
         ];
 
         let currentSlide = 0;
+        let slideInterval;
+        let isPaused = false;
 
         function showSlide(slideIndex) {
             const slide = slides[slideIndex];
             const titleElement = document.getElementById('slideTitle');
             const contentArea = document.getElementById('contentArea');
             const counter = document.getElementById('counter');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
             
             // Update title
             titleElement.textContent = slide.title;
             
-            // Build content - FIXED: Properly handle all content
+            // Build content
             let contentHTML = '';
             slide.content.forEach(line => {
                 if (line.includes('final-box')) {
@@ -284,11 +342,14 @@
             contentArea.innerHTML = contentHTML;
             counter.textContent = `${slideIndex + 1}/${slides.length}`;
             
+            // Update button states
+            prevBtn.disabled = slideIndex === 0;
+            nextBtn.disabled = slideIndex === slides.length - 1;
+            
             // Animate ALL elements with proper sequential timing
             const allElements = contentArea.querySelectorAll('.math-line, .compact-line, .final-box');
             allElements.forEach((element, index) => {
                 element.style.animationDelay = `${index * 0.4}s`;
-                // Remove any existing classes and re-add for clean animation
                 element.classList.remove('fade-in');
                 setTimeout(() => {
                     element.classList.add('fade-in');
@@ -296,6 +357,12 @@
             });
             
             currentSlide = slideIndex;
+            
+            // Set up auto-advance with custom duration for each slide
+            if (!isPaused) {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, slide.duration);
+            }
         }
 
         function nextSlide() {
@@ -304,25 +371,64 @@
             }
         }
 
-        // Auto-advance every 8 seconds
-        let slideInterval = setInterval(nextSlide, 8000);
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
 
-        // Manual navigation
-        document.addEventListener('click', () => {
-            clearInterval(slideInterval);
-            nextSlide();
-            slideInterval = setInterval(nextSlide, 8000);
+        function togglePause() {
+            const pauseBtn = document.getElementById('pauseBtn');
+            isPaused = !isPaused;
+            
+            if (isPaused) {
+                clearInterval(slideInterval);
+                pauseBtn.textContent = 'Resume';
+                pauseBtn.classList.add('paused');
+            } else {
+                pauseBtn.textContent = 'Pause';
+                pauseBtn.classList.remove('paused');
+                // Resume with current slide's duration
+                slideInterval = setInterval(nextSlide, slides[currentSlide].duration);
+            }
+        }
+
+        // Event listeners for controls
+        document.getElementById('pauseBtn').addEventListener('click', togglePause);
+        document.getElementById('prevBtn').addEventListener('click', previousSlide);
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+
+        // Manual navigation via click/spacebar (doesn't affect pause state)
+        document.addEventListener('click', (e) => {
+            // Only advance if clicking on the main content (not controls)
+            if (!e.target.closest('.controls')) {
+                clearInterval(slideInterval);
+                nextSlide();
+                if (!isPaused) {
+                    slideInterval = setInterval(nextSlide, slides[currentSlide].duration);
+                }
+            }
         });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === ' ' || e.key === 'ArrowRight') {
                 clearInterval(slideInterval);
                 nextSlide();
-                slideInterval = setInterval(nextSlide, 8000);
+                if (!isPaused) {
+                    slideInterval = setInterval(nextSlide, slides[currentSlide].duration);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                clearInterval(slideInterval);
+                previousSlide();
+                if (!isPaused) {
+                    slideInterval = setInterval(nextSlide, slides[currentSlide].duration);
+                }
+            } else if (e.key === 'p' || e.key === 'P') {
+                togglePause();
             }
         });
 
-        // Start with first slide - FIXED: Ensure initial content stays visible
+        // Start with first slide
         showSlide(0);
     </script>
 </body>
